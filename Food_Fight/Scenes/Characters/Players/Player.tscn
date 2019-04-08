@@ -1,0 +1,84 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scenes/Characters/Character.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Characters/Players/Armatures/Armature-M.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/GUI.tscn" type="PackedScene" id=5]
+[ext_resource path="res://SFX/harp-glissando-up.wav" type="AudioStream" id=6]
+
+[node name="Player" instance=ExtResource( 1 )]
+collision_layer = 2
+collision_mask = 13
+script = ExtResource( 2 )
+
+[node name="MeshInstance" parent="." index="0"]
+visible = false
+
+[node name="Armature" parent="." index="2" instance=ExtResource( 3 )]
+transform = Transform( 0.25, 0, 0, 0, -1.09278e-008, -0.25, 0, 0.25, -1.09278e-008, 0, 0, 0 )
+
+[node name="AnimationTreePlayer" parent="Armature" index="2"]
+data = {
+"active": true,
+"connections": [ "Action", "out", 0, "IdleAnim", "Move", 0, "RunAnim", "Move", 1, "ThrowAnim", "Action", 0, "Move", "Action", 1, "ReloadAnim", "Action", 2 ],
+"master": NodePath("../AnimationPlayer"),
+"nodes": [ {
+"id": "out",
+"position": Vector2( 508, 97 ),
+"type": "output"
+}, {
+"blend": 0.0,
+"filter": [  ],
+"id": "Move",
+"position": Vector2( 209, 70 ),
+"type": "blend2"
+}, {
+"filter": [  ],
+"from": "Idle",
+"id": "IdleAnim",
+"position": Vector2( 28, 55 ),
+"type": "animation"
+}, {
+"filter": [  ],
+"from": "Run",
+"id": "RunAnim",
+"position": Vector2( 16, 176 ),
+"type": "animation"
+}, {
+"blend": 0.0,
+"id": "Action",
+"position": Vector2( 419, 58 ),
+"type": "blend3"
+}, {
+"filter": [  ],
+"from": "Working",
+"id": "ReloadAnim",
+"position": Vector2( 271, 187 ),
+"type": "animation"
+}, {
+"filter": [  ],
+"from": "Punch",
+"id": "ThrowAnim",
+"position": Vector2( 247, 20 ),
+"type": "animation"
+} ]
+}
+
+[node name="Camera" type="Camera" parent="." index="3"]
+transform = Transform( -0.998807, 0, -0.0488336, 0, 1, 0, 0.0488336, 0, -0.998807, 0, 2.22009, -3.02489 )
+doppler_tracking = 2
+current = true
+script = ExtResource( 4 )
+
+[node name="RefillTimer" type="Timer" parent="." index="6"]
+one_shot = true
+
+[node name="GUI" parent="." index="7" instance=ExtResource( 5 )]
+
+[node name="Harp" type="AudioStreamPlayer3D" parent="." index="8"]
+stream = ExtResource( 6 )
+
+[connection signal="timeout" from="RefillTimer" to="." method="_on_RefillTimer_timeout"]
+
+[editable path="Armature"]
